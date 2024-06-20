@@ -10,8 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import main.java.com.example.Calculadora;
 
 @DisplayName("Pruebas de la clase Calculadora")
 class CalculadoraTest {
@@ -46,12 +47,11 @@ class CalculadoraTest {
 				assertEquals(3, result);
 			}
 			
-			@Test
+			@ParameterizedTest(name = "Caso {index}: {0} + {1} = {2}")
 			@DisplayName("Suma dos reales")
-			void test2() {
-				var result = calculadora.add(0.1, 0.2);
-				
-				assertEquals(0.3, result);
+			@CsvSource(value = {"1,2,3","3,-1,2","-1,2,1","-2,-3,-5","0,1,1","0.1,0.2,0.3"})
+			void testAdd(double operando1, double operando2, double result) {
+				assertEquals(result, calculadora.add(operando1, operando2));
 			}
 		}	
 		@Nested
