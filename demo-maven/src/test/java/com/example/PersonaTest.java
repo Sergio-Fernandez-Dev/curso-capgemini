@@ -63,7 +63,6 @@ class PersonaTest {
 		
 		@Test
 		void ponMayusculasServiceKO() {
-			var persona = new Persona(1, "Pepito", "Grillo");
 			var dao = mock(PersonaRepository.class);
 			when(dao.getOne(anyInt())).thenReturn(Optional.empty());
 			var srv = new PersonaService(dao);
