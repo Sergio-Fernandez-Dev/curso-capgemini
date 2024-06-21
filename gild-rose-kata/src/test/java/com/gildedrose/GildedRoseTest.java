@@ -64,7 +64,13 @@ class GildedRoseTest {
     class AgedBrieItem {
     	@ParameterizedTest
     	@DisplayName("Test if sellIn and quality is correctly updated")
-    	@CsvSource(value = {"7,5,6,6", "1,50,0,50", "-1,48,-2,50", "-1,49,-2,50", "0,50,-1,50"})
+    	@CsvSource(value = {
+    			"7,5,6,6", 
+    			"1,50,0,50", 
+    			"-1,48,-2,50", 
+    			"-1,49,-2,50", 
+    			"0,50,-1,50"
+    	})
     	void testDailyUpdate(int sellIn, int qualityIn, int sellOut, int qualityOut) {
     		Item[] items = new Item[] { new Item("Aged Brie", sellIn, qualityIn) };
     		GildedRose app = new GildedRose(items);
@@ -73,9 +79,46 @@ class GildedRoseTest {
     		
     		assertAll("Single downgrade", () -> assertEquals(sellOut, items[0].sellIn), 
     				() -> assertEquals(qualityOut, items[0].quality));
-    	}
-    
+    	} 
     }
     
-
+    @Nested
+    class Sulfuras {
+    	@ParameterizedTest
+    	@DisplayName("Test if sellIn and quality remains unchanged")
+    	@CsvSource(value = {"7,80,7,80"})
+    	void testDailyUpdate(int sellIn, int qualityIn, int sellOut, int qualityOut) {
+    		Item[] items = new Item[] { new Item("Sulfuras, Hand of Ragnaros", sellIn, qualityIn) };
+    		GildedRose app = new GildedRose(items);
+    		
+    		app.updateQuality();
+    		
+    		assertAll("Sulfuras unchanged", () -> assertEquals(sellOut, items[0].sellIn), 
+    				() -> assertEquals(qualityOut, items[0].quality));
+    	} 
+    }
+    
+    @Nested
+    class BackstageEntry {
+    	@ParameterizedTest
+    	@DisplayName("Test if sellIn and quality is correctly updated")
+    	@CsvSource(value = {
+    			"3,47,2,50", 
+    			"1,50,0,50", 
+    			"-1,48,-2,0",
+    			"0,50,-1,0",
+    			"10,49,9,50",
+    			"1,48,0,50",
+    			"1,48,0,50"
+    	})
+    	void testDailyUpdate(int sellIn, int qualityIn, int sellOut, int qualityOut) {
+    		Item[] items = new Item[] { new Item("Backstage passes to a TAFKAL80ETC concert", sellIn, qualityIn) };
+    		GildedRose app = new GildedRose(items);
+    		
+    		app.updateQuality();
+    		
+    		assertAll("Daily update", () -> assertEquals(sellOut, items[0].sellIn), 
+    				() -> assertEquals(qualityOut, items[0].quality));
+    	} 
+    }
 }
