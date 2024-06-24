@@ -42,12 +42,10 @@ public class Actor implements Serializable {
 		this.actorId = actorId;
 	}
 	
-	public Actor(int actorId, String firstName, String lastName, Timestamp lastUpdate, List<FilmActor> filmActors) {
+	public Actor(int actorId, String firstName, String lastName) {
 		this.actorId = actorId;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.lastUpdate = lastUpdate;
-		this.filmActors = filmActors;
 	}
 
 	@Override
