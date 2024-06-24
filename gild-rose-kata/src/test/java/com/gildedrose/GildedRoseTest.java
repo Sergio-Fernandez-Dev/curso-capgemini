@@ -56,8 +56,7 @@ class GildedRoseTest {
     		
     		assertAll("Single downgrade", () -> assertEquals(sellOut, items[0].sellIn), 
     				() -> assertEquals(qualityOut, items[0].quality));
-    	}
-    	
+    	}  	
     }
     
     @Nested
@@ -83,7 +82,7 @@ class GildedRoseTest {
     }
     
     @Nested
-    class Sulfuras {
+    class SulfurasItem {
     	@ParameterizedTest
     	@DisplayName("Test if sellIn and quality remains unchanged")
     	@CsvSource(value = {"7,80,7,80"})
@@ -120,5 +119,21 @@ class GildedRoseTest {
     		assertAll("Daily update", () -> assertEquals(sellOut, items[0].sellIn), 
     				() -> assertEquals(qualityOut, items[0].quality));
     	} 
+    }
+    
+    @Nested
+    class SpeltItem {
+    	@ParameterizedTest
+    	@DisplayName("Test if sellIn and quality is correctly updated")
+    	@CsvSource(value = {"7,5,6,3", "1,0,0,0", "-1,7,-2,3", "0,1,-1,0"})
+    	void testDailyUpdate(int sellIn, int qualityIn, int sellOut, int qualityOut) {
+    		Item[] items = new Item[] { new Item("Spelt", sellIn, qualityIn) };
+    		GildedRose app = new GildedRose(items);
+    		
+    		app.updateQuality();
+    		
+    		assertAll("Spelt update", () -> assertEquals(sellOut, items[0].sellIn), 
+    				() -> assertEquals(qualityOut, items[0].quality));
+    	}
     }
 }
