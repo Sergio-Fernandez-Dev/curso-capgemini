@@ -2,9 +2,13 @@ package com.catalogo.domains.entities;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.catalogo.domains.core.entities.EntityBase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name="category")
 @NamedQuery(name="Category.findAll", query="SELECT c FROM Category c")
-public class Category implements Serializable {
+public class Category extends EntityBase<Category> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -25,10 +29,13 @@ public class Category implements Serializable {
 	@JsonProperty("id")
 	private int categoryId;
 
+	@NotNull
 	@Column(name="last_update", insertable=false, updatable=false, nullable=false)
 	@JsonIgnore
 	private Timestamp lastUpdate;
 
+	@NotNull
+	@NotBlank
 	@Column(nullable=false, length=25)
 	@JsonProperty("categoria")
 	private String name;
