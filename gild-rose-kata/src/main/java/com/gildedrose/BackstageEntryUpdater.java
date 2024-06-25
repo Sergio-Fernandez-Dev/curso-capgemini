@@ -7,10 +7,8 @@ public class BackstageEntryUpdater implements Updatable{
 	@Override
 	public void update(Item item) {
 		item.sellIn--;
-		if (item.sellIn <= 0 )
-			item.quality = MIN_QUALITY;
 		
-		if (item.sellIn > 0 && item.quality < MAX_QUALITY)
+		if (item.sellIn >= 0 && item.quality < MAX_QUALITY)
 			item.quality++;
 		
 		if (item.sellIn <= 10 && item.quality < MAX_QUALITY)
@@ -19,5 +17,7 @@ public class BackstageEntryUpdater implements Updatable{
 		if (item.sellIn <= 5 && item.quality < MAX_QUALITY)
 			item.quality++;
 		
+		if (item.sellIn < 0 )
+			item.quality = MIN_QUALITY;
 	}
 }
