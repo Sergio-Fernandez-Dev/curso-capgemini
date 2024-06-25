@@ -7,8 +7,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.ServletRequestParameterPropertyValues;
 
 import com.example.domains.contracts.repositories.ActorRepository;
+import com.example.domains.contracts.service.ActorService;
 import com.example.domains.core.entities.models.ActorDTO;
 import com.example.domains.core.entities.models.ActorShort;
 import com.example.domains.entities.Actor;
@@ -24,13 +26,21 @@ import jakarta.transaction.Transactional;
 
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
+	
+	@Autowired
+	ActorService srv;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 	
-	@Autowired
-	ActorRepository dao;
+	public void run(String... args) throws Exception {
+		System.err.println("Aplicación arrancada...");
+		srv.getByProjection(ActorDTO.class).forEach(System.out::println);
+	}
+	
+//	@Autowired
+//	ActorRepository dao;
 
 //	@Autowired
 ////	@Qualifier("es")
@@ -46,10 +56,10 @@ public class DemoApplication implements CommandLineRunner {
 //	@Autowired(required = false)
 //	SaludaEnImpl kk;
 	
-	@Override
-	@Transactional
-	public void run(String... args) throws Exception {
-		System.err.println("Aplicación arrancada...");
+//	@Override
+//	@Transactional
+//	public void run(String... args) throws Exception {
+//		System.err.println("Aplicación arrancada...");
 		
 //		dao.findAll().forEach(System.out::println);
 //		if (item.isEmpty()) {
@@ -97,22 +107,22 @@ public class DemoApplication implements CommandLineRunner {
 //		dao.queryByActorIdGreaterThanEqual(200).forEach(item -> System.out.println(item.getId() + " " + item.getNombre()));
 //		dao.findByActorIdGreaterThanEqual(200, ActorDTO.class).forEach(System.out::println);
 //		dao.findAll(PageRequest.of(3, 10, Sort.by("ActorId"))).forEach(System.out::println);
-		var serializa = new ObjectMapper();
-		dao.findByActorIdGreaterThanEqual(200, ActorDTO.class)
-			.forEach(item -> {
-				try {				
-					System.out.println(serializa.writeValueAsString(item));
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
-			});
-		dao.findAll(PageRequest.of(3, 10, Sort.by("ActorId")))
-			.forEach(item -> {
-				try {				
-					System.out.println(serializa.writeValueAsString(item));
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-			}
-		});
-	}
+//		var serializa = new ObjectMapper();
+//		dao.findByActorIdGreaterThanEqual(200, ActorDTO.class)
+//			.forEach(item -> {
+//				try {				
+//					System.out.println(serializa.writeValueAsString(item));
+//				} catch (JsonProcessingException e) {
+//					e.printStackTrace();
+//				}
+//			});
+//		dao.findAll(PageRequest.of(3, 10, Sort.by("ActorId")))
+//			.forEach(item -> {
+//				try {				
+//					System.out.println(serializa.writeValueAsString(item));
+//				} catch (JsonProcessingException e) {
+//					e.printStackTrace();
+//			}
+//		});
+
 }
