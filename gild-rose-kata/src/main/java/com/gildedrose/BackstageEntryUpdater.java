@@ -1,6 +1,6 @@
 package com.gildedrose;
 
-public class BackstageEntryUploader implements Updatable{
+public class BackstageEntryUpdater implements Updatable{
 	private final int MIN_QUALITY= 0;
 	private final int MAX_QUALITY= 50;
 	
@@ -12,5 +12,12 @@ public class BackstageEntryUploader implements Updatable{
 		
 		if (item.sellIn > 0 && item.quality < MAX_QUALITY)
 			item.quality++;
+		
+		if (item.sellIn <= 10 && item.quality < MAX_QUALITY)
+			item.quality++;
+	
+		if (item.sellIn <= 5 && item.quality < MAX_QUALITY)
+			item.quality++;
+		
 	}
 }

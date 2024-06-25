@@ -1,6 +1,6 @@
 package com.gildedrose;
 
-public class SulfuraUploader implements Updatable {
+public class SulfuraUpdater implements Updatable {
 
 	@Override
 	public void update(Item item) {

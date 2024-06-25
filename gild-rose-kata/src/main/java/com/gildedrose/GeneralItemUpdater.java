@@ -1,6 +1,6 @@
 package com.gildedrose;
 
-public class GeneralItemUploader implements Updatable{
+public class GeneralItemUpdater implements Updatable{
 	private final int MIN_QUALITY= 0;
 
 	@Override
