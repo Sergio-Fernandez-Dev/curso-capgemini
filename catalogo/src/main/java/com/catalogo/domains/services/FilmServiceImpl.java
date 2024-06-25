@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.catalogo.domains.contracts.repositories.FilmRepository;
 import com.catalogo.domains.contracts.service.FilmService;
-import com.catalogo.domains.core.contracts.repositories.FilmRepository;
 import com.catalogo.domains.entities.Film;
 import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;
