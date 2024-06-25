@@ -3,7 +3,8 @@ package com.example.domains.core.entities.models;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface ActorShort {
-	int getActorId();
-	@Value("#{target.firstname + ' ' + target.lastName}")
+	@Value("#{target.ActorId}")
+	int getId();
+	@Value("#{target.firstName + ' ' + target.lastName}")
 	String getNombre();
 }

@@ -1,18 +1,26 @@
 package com.example;
 
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import com.example.domains.contracts.repositories.ActorRepository;
+import com.example.domains.core.entities.models.ActorDTO;
+import com.example.domains.core.entities.models.ActorShort;
 import com.example.domains.entities.Actor;
 import com.example.ioc.Entorno;
 import com.example.ioc.Rango;
 import com.example.ioc.Saluda;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import jakarta.transaction.Transactional;
+
 
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
@@ -76,12 +84,35 @@ public class DemoApplication implements CommandLineRunner {
 //			System.out.println(actor);
 //			actor.getFilmActors().forEach(f -> System.out.println(f.getFilm().getTitle()));
 //		}
-		var actor = new Actor(0, "   ", "12345678Z");
-		if (actor.isValid()) {
-			System.out.println(actor);
-		} else {
-			actor.getErrors().forEach(System.out::println);
-		}
+//		var actor = new Actor(0, "   ", "12345678Z");
+//		if (actor.isValid()) {
+//			System.out.println(actor);
+//		} else {
+//			actor.getErrors().forEach(System.out::println);
+//		}
+//		var actor = new ActorDTO(0, "FROM", "DTO");
+//		dao.save(ActorDTO.from(actor));
+//		dao.findAll().forEach(item -> System.out.println(ActorDTO.from(item)));
+//		dao.readByActorIdGreaterThanEqual(200).forEach(System.out::println);
+//		dao.queryByActorIdGreaterThanEqual(200).forEach(item -> System.out.println(item.getId() + " " + item.getNombre()));
+//		dao.findByActorIdGreaterThanEqual(200, ActorDTO.class).forEach(System.out::println);
+//		dao.findAll(PageRequest.of(3, 10, Sort.by("ActorId"))).forEach(System.out::println);
+		var serializa = new ObjectMapper();
+		dao.findByActorIdGreaterThanEqual(200, ActorDTO.class)
+			.forEach(item -> {
+				try {				
+					System.out.println(serializa.writeValueAsString(item));
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+			});
+		dao.findAll(PageRequest.of(3, 10, Sort.by("ActorId")))
+			.forEach(item -> {
+				try {				
+					System.out.println(serializa.writeValueAsString(item));
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+			}
+		});
 	}
-
 }
