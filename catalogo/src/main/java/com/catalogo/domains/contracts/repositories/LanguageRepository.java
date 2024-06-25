@@ -1,8 +1,8 @@
 package com.catalogo.domains.contracts.repositories;
 
 import com.catalogo.domains.core.contracts.repositories.ProjectionsAndSpecificationJpaRepository;
-import com.catalogo.domains.entities.Actor;
+import com.catalogo.domains.entities.Language;
 
-public interface ActorRepository extends ProjectionsAndSpecificationJpaRepository<Actor, Integer> {
+public interface LanguageRepository extends ProjectionsAndSpecificationJpaRepository<Language, Integer> {
 
 }
