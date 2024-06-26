@@ -41,7 +41,7 @@ class FilmServiceImplTest {
 
 	@Autowired
 	FilmService srv;
-	
+
 	private Film film1;
 	private Film film2;
 	private Film film3;
@@ -68,7 +68,7 @@ class FilmServiceImplTest {
 		film1.setTitle("A Movie Title");
 		film1.setLanguage(language);
 		film1.setFilmActors(new ArrayList<>());
-		
+
 		film1.setFilmId(2);
 		film1.setDescription("Another great movie.");
 		film1.setLastUpdate(new Timestamp(System.currentTimeMillis()));
@@ -81,7 +81,7 @@ class FilmServiceImplTest {
 		film1.setTitle("A Movie Title");
 		film1.setLanguage(language);
 		film1.setFilmActors(new ArrayList<>());
-		
+
 		film1.setFilmId(3);
 		film1.setDescription("Best movie at all.");
 		film1.setLastUpdate(new Timestamp(System.currentTimeMillis()));
@@ -105,7 +105,6 @@ class FilmServiceImplTest {
 		actor2.setFirstName("Jane");
 		actor2.setLastName("Smith");
 	}
-	
 
 	@Test
 	void testGetAll_isNotEmpty() {
@@ -119,6 +118,19 @@ class FilmServiceImplTest {
 		assertThat(result.size()).isEqualTo(3);
 		verify(dao, times(1)).findAll();
 	}
-	
-	
+
+	@Test
+	void testGetOne_valid() {
+
+		when(dao.findById(1)).thenReturn(Optional.of(film1));
+		var result = srv.getOne(1);
+		assertThat(result.isPresent()).isTrue();
+	}
+
+	@Test
+	void testGetOne_notfound() {
+		when(dao.findById(1)).thenReturn(Optional.empty());
+		var result = srv.getOne(1);
+		assertThat(result.isEmpty()).isTrue();
+	}
 }
