@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import com.catalogo.domains.contracts.repositories.FilmRepository;
 import com.catalogo.domains.contracts.service.FilmService;
@@ -14,6 +15,7 @@ import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;
 import com.catalogo.exceptions.NotFoundException;
 
+@Service
 public class FilmServiceImpl implements FilmService{
 	
 	private FilmRepository dao;
