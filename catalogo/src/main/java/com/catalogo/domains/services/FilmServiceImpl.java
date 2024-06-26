@@ -9,18 +9,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.catalogo.domains.contracts.repositories.FilmRepository;
-import com.catalogo.domains.contracts.service.FilmService;
+import com.catalogo.domains.contracts.services.FilmService;
+import com.catalogo.domains.entities.Actor;
 import com.catalogo.domains.entities.Film;
 import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;
 import com.catalogo.exceptions.NotFoundException;
 
-
 @Service
-public class FilmServiceImpl implements FilmService{
-	
+public class FilmServiceImpl implements FilmService {
+
 	private FilmRepository dao;
-	
 
 	public FilmServiceImpl(FilmRepository dao) {
 		this.dao = dao;
@@ -41,7 +40,6 @@ public class FilmServiceImpl implements FilmService{
 		return dao.findAllBy(pageable, type);
 	}
 
-
 	@Override
 	public Iterable<Film> getAll(Sort sort) {
 		return dao.findAll(sort);
@@ -61,7 +59,6 @@ public class FilmServiceImpl implements FilmService{
 	public Optional<Film> getOne(Integer id) {
 		return dao.findById(id);
 	}
-	
 
 	@Override
 	public Film add(Film item) throws DuplicateKeyException, InvalidDataException {
@@ -95,5 +92,38 @@ public class FilmServiceImpl implements FilmService{
 	@Override
 	public void deleteById(Integer id) {
 		dao.deleteById(id);
+	}
+
+	public void addActorToFilm(Integer filmId, Actor actor) throws InvalidDataException, NotFoundException {
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		Film film = filmOptional.get();
+
+		if (actor == null)
+			throw new InvalidDataException("No puede ser nulo");
+		if (actor.isInvalid())
+			throw new InvalidDataException(actor.getErrorsMessage(), actor.getErrorsFields());
+
+		film.addActor(actor);
+		dao.save(film);
+	}
+
+	public List<Actor> getActorsInFilm(Integer filmId) throws NotFoundException {
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		return filmOptional.get().getActors();
+	}
+
+	public void deleteActorFromFilm(Integer filmId, Actor actor) throws NotFoundException {
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		
+		filmOptional.get().removeActor(actor);
 	}
 }

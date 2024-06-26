@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.catalogo.domains.contracts.repositories.ActorRepository;
-import com.catalogo.domains.contracts.service.ActorService;
+import com.catalogo.domains.contracts.services.ActorService;
 import com.catalogo.domains.entities.Actor;
 import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;

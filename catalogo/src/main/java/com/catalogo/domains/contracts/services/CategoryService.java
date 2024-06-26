@@ -1,4 +1,4 @@
-package com.catalogo.domains.contracts.service;
+package com.catalogo.domains.contracts.services;
 
 import com.catalogo.domains.core.contracts.services.ProjectionDomainService;
 import com.catalogo.domains.entities.Category;

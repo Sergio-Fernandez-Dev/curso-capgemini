@@ -208,16 +208,12 @@ public class Film extends EntityBase<Film> implements Serializable {
 		return this.filmActors.stream().map(item -> item.getActor()).toList();
 	}
 	
-	public void addActor(Actor item) {
-		FilmActor filmActor = new FilmActor(this, item);
+	public void addActor(Actor actor) {
+		FilmActor filmActor = new FilmActor(this, actor);
 		filmActors.add(filmActor);	
 	}
 	
 	public void removeActor(Actor actor) {
-		for (FilmActor filmActor : filmActors) {
-			if (filmActor.getActor().equals(actor)) {
-				filmActors.remove(filmActor);
-			}
-		}			
+		filmActors.removeIf(filmActor -> filmActor.getActor().equals(actor));
 	}
 }
