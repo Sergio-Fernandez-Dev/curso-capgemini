@@ -17,7 +17,7 @@ import com.example.ioc.Saluda;
 @ActiveProfiles("test")
 class DemoApplicationTests {
 
-	@TestConfiguration
+	@TestConfiguration 
 	static class Contexto {
 		@Bean
 		Saluda saluda() {
@@ -27,7 +27,7 @@ class DemoApplicationTests {
 		}
 	}
 	
-	@Autowired 
+	@Autowired
 	Saluda saluda;
 	
 	@Test

@@ -63,7 +63,7 @@ public class Film implements Serializable {
 	private List<FilmActor> filmActors;
 
 	//bi-directional many-to-one association to FilmCategory
-	@OneToMany(mappedBy="film")
+	@OneToMany(mappedBy="film", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<FilmCategory> filmCategories;
 
 	//bi-directional many-to-one association to Inventory

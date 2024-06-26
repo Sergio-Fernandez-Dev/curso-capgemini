@@ -33,18 +33,18 @@ public class Actor extends EntityBase<Actor> implements Serializable {
 	private int actorId;
 
 	@Column(name="first_name", nullable=false, length=45)
-//	@NotBlank
-//	@Size(max=45, min=2)
-//	@Pattern(regexp= "^[A-Z]+$", message = "tiene que estar en mayúsculas")
+	@NotBlank
+	@Size(max=45, min=2)
+//	@Pattern(regexp = "^[A-Z]+$", message = "tiene que estar en mayusculas")
 	private String firstName;
 
 	@Column(name="last_name", nullable=false, length=45)
-//	@NotBlank
-//	@Size(max=45, min=2)
+	@NotBlank
+	@Size(max=45, min=2)
 //	@NIF
 	private String lastName;
 
-	@Column(name="last_update", insertable=false, updatable=false, nullable=false)
+	@Column(name="last_update", insertable=false, updatable=false/*, nullable=false*/)
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp lastUpdate;
 
@@ -55,46 +55,15 @@ public class Actor extends EntityBase<Actor> implements Serializable {
 
 	public Actor() {
 	}
-	
+
 	public Actor(int actorId) {
 		this.actorId = actorId;
 	}
-	
+
 	public Actor(int actorId, String firstName, String lastName) {
 		this.actorId = actorId;
 		this.firstName = firstName;
 		this.lastName = lastName;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(actorId);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Actor other = (Actor) obj;
-		return actorId == other.actorId;
-	}
-
-	@Override
-	public String toString() {
-		return "Actor [actorId=" + actorId + ", firstName=" + firstName + ", lastName=" + lastName + ", lastUpdate="
-				+ lastUpdate + "]";
-	}
-	
-	public void jubilate() {
-		
-	}
-	
-	public void recibePremio(String premio) {
-		
 	}
 
 	public int getActorId() {
@@ -151,4 +120,35 @@ public class Actor extends EntityBase<Actor> implements Serializable {
 		return filmActor;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(actorId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Actor other = (Actor) obj;
+		return actorId == other.actorId;
+	}
+
+	@Override
+	public String toString() {
+		return "Actor [actorId=" + actorId + ", firstName=" + firstName + ", lastName=" + lastName + ", lastUpdate="
+				+ lastUpdate + "]";
+	}
+
+	public void jubilate() {
+		
+	}
+	
+	public void recibePremio(String premio) {
+		
+	}
+	
 }
