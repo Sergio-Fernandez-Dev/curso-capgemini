@@ -2,12 +2,14 @@ package com.catalogo.domains.entities;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-
 import com.catalogo.domains.core.entities.EntityBase;
 
 
@@ -34,8 +36,10 @@ public class Film extends EntityBase<Film> implements Serializable {
 	@Column(name="last_update", insertable=false, updatable=false, nullable=false)
 	private Timestamp lastUpdate;
 
+	@Min(0)
 	private int length;
 
+	@Size(max=1)
 	@Column(length=1)
 	private String rating;
 
@@ -43,6 +47,8 @@ public class Film extends EntityBase<Film> implements Serializable {
 	private Short releaseYear;
 
 	@NotNull
+	@Min(1)
+    @Max(127)
 	@Column(name="rental_duration", nullable=false)
 	private byte rentalDuration;
 
@@ -55,6 +61,7 @@ public class Film extends EntityBase<Film> implements Serializable {
 	private BigDecimal replacementCost;
 
 	@NotNull
+	@Size(max = 128)
 	@Column(nullable=false, length=128)
 	private String title;
 
@@ -175,7 +182,7 @@ public class Film extends EntityBase<Film> implements Serializable {
 	public void setLanguageVO(Language languageVO) {
 		this.languageVO = languageVO;
 	}
-
+	
 	public List<FilmActor> getFilmActors() {
 		return this.filmActors;
 	}
@@ -197,26 +204,20 @@ public class Film extends EntityBase<Film> implements Serializable {
 
 		return filmActor;
 	}
-
-	public List<FilmCategory> getFilmCategories() {
-		return this.filmCategories;
+	public List<Actor> getActors() {
+		return this.filmActors.stream().map(item -> item.getActor()).toList();
 	}
-
-	public void setFilmCategories(List<FilmCategory> filmCategories) {
-		this.filmCategories = filmCategories;
+	
+	public void addActor(Actor item) {
+		FilmActor filmActor = new FilmActor(this, item);
+		filmActors.add(filmActor);	
 	}
-
-	public FilmCategory addFilmCategory(FilmCategory filmCategory) {
-		getFilmCategories().add(filmCategory);
-		filmCategory.setFilm(this);
-
-		return filmCategory;
-	}
-
-	public FilmCategory removeFilmCategory(FilmCategory filmCategory) {
-		getFilmCategories().remove(filmCategory);
-		filmCategory.setFilm(null);
-
-		return filmCategory;
+	
+	public void removeActor(Actor actor) {
+		for (FilmActor filmActor : filmActors) {
+			if (filmActor.getActor().equals(actor)) {
+				filmActors.remove(filmActor);
+			}
+		}			
 	}
 }
