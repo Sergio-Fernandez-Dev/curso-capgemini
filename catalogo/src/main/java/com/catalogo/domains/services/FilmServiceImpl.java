@@ -94,7 +94,7 @@ public class FilmServiceImpl implements FilmService {
 		dao.deleteById(id);
 	}
 
-	public void addActorToFilm(Integer filmId, Actor actor) throws InvalidDataException, NotFoundException {
+	public Film addActorToFilm(Integer filmId, Actor actor) throws InvalidDataException, NotFoundException {
 		Optional<Film> filmOptional = dao.findById(filmId);
 		if (filmOptional.isEmpty()) {
 			throw new NotFoundException("Film not found");
@@ -108,6 +108,8 @@ public class FilmServiceImpl implements FilmService {
 
 		film.addActor(actor);
 		dao.save(film);
+		
+		return film;
 	}
 
 	public List<Actor> getActorsInFilm(Integer filmId) throws NotFoundException {
