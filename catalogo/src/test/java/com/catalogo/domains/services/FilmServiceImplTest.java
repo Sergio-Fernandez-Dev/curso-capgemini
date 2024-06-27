@@ -10,13 +10,9 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +27,7 @@ import com.catalogo.domains.entities.Film;
 import com.catalogo.domains.entities.Language;
 import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;
+import com.catalogo.exceptions.NotFoundException;
 
 @DataJpaTest
 @ComponentScan(basePackages = "com.catalogo")
@@ -132,5 +129,32 @@ class FilmServiceImplTest {
 		when(dao.findById(1)).thenReturn(Optional.empty());
 		var result = srv.getOne(1);
 		assertThat(result.isEmpty()).isTrue();
+	}
+	
+	@Test
+	void testAddKO() throws DuplicateKeyException, InvalidDataException {
+		when(dao.save(any(Film.class))).thenReturn(null, null);
+		assertThrows(InvalidDataException.class, () -> srv.add(null));
+		verify(dao, times(0)).save(null);
+	}
+	
+	@Test
+	void testAddDuplicateKeyKO() throws DuplicateKeyException, InvalidDataException {
+		when(dao.findById(1)).thenReturn(Optional.of(film1));
+		assertThrows(DuplicateKeyException.class, () -> srv.add(film1));
+	}
+	
+	@Test
+	void testAddActorToFilm() throws InvalidDataException, NotFoundException {
+		when(dao.findById(1)).thenReturn(Optional.of(film1));
+		var result = srv.addActorToFilm(1, actor1);
+		assertEquals(actor1, result.getActors().getFirst());
+	}
+	@Test
+	void getActorsInFilm() throws InvalidDataException, NotFoundException {
+		when(dao.findById(1)).thenReturn(Optional.of(film1));
+		var result = srv.addActorToFilm(1, actor1);
+		result = srv.addActorToFilm(2, actor2);
+		assertFalse(result.getFilmActors().isEmpty());
 	}
 }
