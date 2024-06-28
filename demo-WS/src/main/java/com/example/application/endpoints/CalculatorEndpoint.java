@@ -11,7 +11,7 @@ import com.example.webservices.schemas.calculator.AddResponse;
 @Endpoint
 public class CalculatorEndpoint {
 	private static final String NAMESPACE_URI = "http://example.com/webservices/schemas/calculator";
-	
+
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "addRequest")
 	@ResponsePayload
 	public AddResponse add(@RequestPayload AddRequest request) {
@@ -19,4 +19,5 @@ public class CalculatorEndpoint {
 		result.setAddResult(request.getOp1() + request.getOp2());
 		return result;
 	}
+
 }
