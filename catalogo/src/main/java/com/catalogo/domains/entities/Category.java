@@ -3,14 +3,16 @@ package com.catalogo.domains.entities;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-import java.sql.Timestamp;
-import java.util.List;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 import com.catalogo.domains.core.entities.EntityBase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -25,18 +27,17 @@ public class Category extends EntityBase<Category> implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="category_id", unique=true, nullable=false)
+	@Column(name="category_id")
 	@JsonProperty("id")
 	private int categoryId;
 
-	@NotNull
-	@Column(name="last_update", insertable=false, updatable=false, nullable=false)
+	@Column(name="last_update", insertable = false, updatable = false)
+	@PastOrPresent
 	@JsonIgnore
 	private Timestamp lastUpdate;
 
-	@NotNull
 	@NotBlank
-	@Column(nullable=false, length=25)
+	@Size(max=25)
 	@JsonProperty("categoria")
 	private String name;
 
@@ -46,6 +47,15 @@ public class Category extends EntityBase<Category> implements Serializable {
 	private List<FilmCategory> filmCategories;
 
 	public Category() {
+	}
+
+	public Category(int categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public Category(int categoryId, @NotBlank @Size(max = 25) String name) {
+		this.categoryId = categoryId;
+		this.name = name;
 	}
 
 	public int getCategoryId() {
@@ -92,6 +102,26 @@ public class Category extends EntityBase<Category> implements Serializable {
 		filmCategory.setCategory(null);
 
 		return filmCategory;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(categoryId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof Category o)
+			return categoryId == o.categoryId;
+		else
+			return false;
+	}
+
+	@Override
+	public String toString() {
+		return "Category [categoryId=" + categoryId + ", name=" + name + ", lastUpdate=" + lastUpdate + "]";
 	}
 
 }
