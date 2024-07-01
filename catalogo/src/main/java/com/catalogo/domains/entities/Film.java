@@ -2,15 +2,22 @@ package com.catalogo.domains.entities;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import com.catalogo.domains.core.entities.EntityBase;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 /**
@@ -23,66 +30,122 @@ import com.catalogo.domains.core.entities.EntityBase;
 public class Film extends EntityBase<Film> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	public static enum Rating {
+		GENERAL_AUDIENCES("G"), PARENTAL_GUIDANCE_SUGGESTED("PG"), PARENTS_STRONGLY_CAUTIONED("PG-13"), RESTRICTED("R"),
+		ADULTS_ONLY("NC-17");
+
+		String value;
+
+		Rating(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public static Rating getEnum(String value) {
+			switch (value) {
+			case "G":
+				return Rating.GENERAL_AUDIENCES;
+			case "PG":
+				return Rating.PARENTAL_GUIDANCE_SUGGESTED;
+			case "PG-13":
+				return Rating.PARENTS_STRONGLY_CAUTIONED;
+			case "R":
+				return Rating.RESTRICTED;
+			case "NC-17":
+				return Rating.ADULTS_ONLY;
+			case "":
+				return null;
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + value);
+			}
+		}
+
+		public static final String[] VALUES = { "G", "PG", "PG-13", "R", "NC-17" };
+	}
+
+	@Converter
+	private static class RatingConverter implements AttributeConverter<Rating, String> {
+		@Override
+		public String convertToDatabaseColumn(Rating rating) {
+			return rating == null ? null : rating.getValue();
+		}
+
+		@Override
+		public Rating convertToEntityAttribute(String value) {
+			return value == null ? null : Rating.getEnum(value);
+		}
+	}
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@NotNull
-	@Column(name="film_id", unique=true, nullable=false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "film_id", unique = true, nullable = false)
 	private int filmId;
 
 	@Lob
 	private String description;
 
-	@NotNull
-	@Column(name="last_update", insertable=false, updatable=false, nullable=false)
+	@Column(name = "last_update", insertable = false, updatable = false, nullable = false)
 	private Timestamp lastUpdate;
 
-	@Min(0)
-	private int length;
+	@Positive
+	private Integer length;
 
-	@Size(max=1)
-	@Column(length=1)
-	private String rating;
+	@Convert(converter = RatingConverter.class)
+	private Rating rating;
 
-	@Column(name="release_year")
+	// @Temporal(TemporalType.DATE)
+	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
+	@Min(1901)
+	@Max(2155)
+	@Column(name = "release_year")
 	private Short releaseYear;
 
 	@NotNull
-	@Min(1)
-    @Max(127)
-	@Column(name="rental_duration", nullable=false)
+	@Positive
+	@Column(name = "rental_duration", nullable = false)
 	private byte rentalDuration;
 
 	@NotNull
-	@Column(name="rental_rate", nullable=false, precision=10, scale=2)
+	@Digits(integer = 2, fraction = 2)
+	@DecimalMin(value = "0.0", inclusive = false)
+	@Column(name = "rental_rate", nullable = false, precision = 10, scale = 2)
 	private BigDecimal rentalRate;
 
 	@NotNull
-	@Column(name="replacement_cost", nullable=false, precision=10, scale=2)
+	@Digits(integer = 3, fraction = 2)
+	@DecimalMin(value = "0.0", inclusive = false)
+	@Column(name = "replacement_cost", nullable = false, precision = 10, scale = 2)
 	private BigDecimal replacementCost;
 
-	@NotNull
+	@NotBlank
 	@Size(max = 128)
-	@Column(nullable=false, length=128)
+	@Column(nullable = false, length = 128)
 	private String title;
 
-	//bi-directional many-to-one association to Language
+	// bi-directional many-to-one association to Language
 	@ManyToOne
+	@JoinColumn(name = "language_id")
 	@NotNull
-	@JoinColumn(name="language_id", nullable=false)
+	@JsonManagedReference
 	private Language language;
 
-	//bi-directional many-to-one association to Language
+	// bi-directional many-to-one association to Language
 	@ManyToOne
-	@JoinColumn(name="original_language_id")
+	@JoinColumn(name = "original_language_id")
+	@JsonManagedReference
 	private Language languageVO;
 
-	//bi-directional many-to-one association to FilmActor
-	@OneToMany(mappedBy="film", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<FilmActor> filmActors;
+	// bi-directional many-to-one association to FilmActor
+	@OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonBackReference
+	private List<FilmActor> filmActors = new ArrayList<FilmActor>();
 
-	//bi-directional many-to-one association to FilmCategory
-	@OneToMany(mappedBy="film")
-	private List<FilmCategory> filmCategories;
+	// bi-directional many-to-one association to FilmCategory
+	@OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonBackReference
+	private List<FilmCategory> filmCategories = new ArrayList<FilmCategory>();
 
 	public Film() {
 	}
@@ -93,6 +156,17 @@ public class Film extends EntityBase<Film> implements Serializable {
 
 	public void setFilmId(int filmId) {
 		this.filmId = filmId;
+		
+		if (filmActors != null && filmActors.size() > 0)
+			filmActors.forEach(item -> {
+				if (item.getId().getFilmId() != filmId)
+					item.getId().setFilmId(filmId);
+			});
+		if (filmCategories != null && filmCategories.size() > 0)
+			filmCategories.forEach(item -> {
+				if (item.getId().getFilmId() != filmId)
+					item.getId().setFilmId(filmId);
+			});
 	}
 
 	public String getDescription() {
@@ -119,11 +193,11 @@ public class Film extends EntityBase<Film> implements Serializable {
 		this.length = length;
 	}
 
-	public String getRating() {
+	public Rating getRating() {
 		return this.rating;
 	}
 
-	public void setRating(String rating) {
+	public void setRating(Rating rating) {
 		this.rating = rating;
 	}
 
