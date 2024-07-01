@@ -2,7 +2,6 @@ package com.catalogo.domains.entities;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.sql.Timestamp;
 
@@ -21,28 +20,27 @@ public class FilmActor implements Serializable {
 
 	@EmbeddedId
 	private FilmActorPK id;
-	
-	@NotNull
-	@Column(name="last_update", nullable=false)
+
+	@Column(name="last_update", insertable = false, updatable = false)
 	private Timestamp lastUpdate;
 
 	//bi-directional many-to-one association to Actor
 	@ManyToOne
-	@NotNull
-	@JoinColumn(name="actor_id", nullable=false, insertable=false, updatable=false)
+	@JoinColumn(name="actor_id", insertable=false, updatable=false)
 	@JsonManagedReference
 	private Actor actor;
 
 	//bi-directional many-to-one association to Film
 	@ManyToOne
-	@NotNull
-	@JoinColumn(name="film_id", nullable=false, insertable=false, updatable=false)
+	@JoinColumn(name="film_id", insertable=false, updatable=false)
+	@JsonManagedReference
 	private Film film;
 
 	public FilmActor() {
 	}
-	
+
 	public FilmActor(Film film, Actor actor) {
+		super();
 		this.film = film;
 		this.actor = actor;
 	}
@@ -79,4 +77,10 @@ public class FilmActor implements Serializable {
 		this.film = film;
 	}
 
+	@PrePersist
+	void prePersiste() {
+		if (id == null) {
+			setId(new FilmActorPK(film.getFilmId(), actor.getActorId()));
+		}
+	}
 }

@@ -31,7 +31,7 @@ public class FilmTest {
         film.setDescription("A great movie.");
         film.setLastUpdate(new Timestamp(System.currentTimeMillis()));
         film.setLength(120);
-        film.setRating(new Film()."PG");
+        film.Rat
         film.setReleaseYear((short) 2023);
         film.setRentalDuration((byte) 5);
         film.setRentalRate(new BigDecimal("2.99"));
