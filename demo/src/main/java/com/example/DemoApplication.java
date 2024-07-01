@@ -1,26 +1,19 @@
 package com.example;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
 
-import com.example.domains.contracts.repositories.ActorRepository;
-import com.example.domains.contracts.services.ActorService;
-import com.example.domains.entities.Actor;
-import com.example.domains.entities.models.ActorDTO;
-import com.example.domains.entities.models.ActorOtroDTO;
-import com.example.domains.entities.models.ActorShort;
-import com.example.ioc.Entorno;
-import com.example.ioc.Rango;
-import com.example.ioc.Saluda;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.example.domains.contracts.proxies.CalculatorProxy;
+import com.example.webservice.schema.AddRequest;
+import com.example.webservice.schema.AddResponse;
+import com.example.webservice.schema.SubstractRequest;
+import com.example.webservice.schema.SubstractResponse;
 
-import jakarta.transaction.Transactional;
 
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
@@ -37,6 +30,37 @@ public class DemoApplication implements CommandLineRunner {
 		System.err.println("Aplicación arrancada...");
 //		srv.getByProjection(ActorDTO.class).forEach(System.out::println);
 	}
+	
+	@Bean
+	CommandLineRunner lookup(CalculatorProxy client) {
+		return args -> { 
+			System.err.println("Calculo suma --> " + client.add(2, 3)); 
+			System.err.println("Calculo resta --> " + client.substract(2, 3)); 
+			System.err.println("Calculo multiplica --> " + client.multiply(2, 3)); 
+			System.err.println("Calculo divide --> " + client.divide(10, 2)); 
+		};
+	
+	}
+	
+//	@Bean
+//	CommandLineRunner lookup(Jaxb2Marshaller marshaller) {
+//		return args -> {		
+//			WebServiceTemplate ws = new WebServiceTemplate(marshaller);
+//			var addRequest = new AddRequest();
+//			addRequest.setOp1(2);
+//			addRequest.setOp2(3);
+//			var addResponse = (AddResponse) ws.marshalSendAndReceive("http://localhost:8090/ws/calculator", 
+//					 addRequest, new SoapActionCallback("http://example.com/webservices/schemas/calculator"));
+//			System.err.println("Calculo remoto suma --> " +addResponse.getAddResult());
+//			
+//			var substractRequest = new SubstractRequest();
+//			substractRequest.setOp1(3);
+//			substractRequest.setOp2(1);
+//			var substractResponse = (SubstractResponse) ws.marshalSendAndReceive("http://localhost:8090/ws/calculator", 
+//					 substractRequest, new SoapActionCallback("http://example.com/webservices/schemas/calculator"));
+//			System.err.println("Calculo remoto resta --> " + substractResponse.getSubstractResult());
+//		};
+//	}
 
 	/*
 	@Autowired
