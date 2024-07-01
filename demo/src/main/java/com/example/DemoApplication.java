@@ -30,18 +30,18 @@ public class DemoApplication implements CommandLineRunner {
 		System.err.println("Aplicación arrancada...");
 //		srv.getByProjection(ActorDTO.class).forEach(System.out::println);
 	}
-	
-	@Bean
-	CommandLineRunner lookup(CalculatorProxy client) {
-		return args -> { 
-			System.err.println("Calculo suma --> " + client.add(2, 3)); 
-			System.err.println("Calculo resta --> " + client.substract(1, 0.9)); 
-			System.err.println("Calculo multiplica --> " + client.multiply(2, 3)); 
-			System.err.println("Calculo divide --> " + client.divide(10, 2)); 
-		};
-	
-	}
-	
+//	
+//	@Bean
+//	CommandLineRunner lookup(CalculatorProxy client) {
+//		return args -> { 
+//			System.err.println("Calculo suma --> " + client.add(2, 3)); 
+//			System.err.println("Calculo resta --> " + client.substract(1, 0.9)); 
+//			System.err.println("Calculo multiplica --> " + client.multiply(2, 3)); 
+//			System.err.println("Calculo divide --> " + client.divide(10, 2)); 
+//		};
+//	
+//	}
+//	
 //	@Bean
 //	CommandLineRunner lookup(Jaxb2Marshaller marshaller) {
 //		return args -> {		
