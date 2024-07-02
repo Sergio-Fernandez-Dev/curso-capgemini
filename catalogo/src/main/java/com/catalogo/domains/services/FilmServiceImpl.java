@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.catalogo.domains.contracts.repositories.FilmRepository;
 import com.catalogo.domains.contracts.services.FilmService;
 import com.catalogo.domains.entities.Actor;
+import com.catalogo.domains.entities.Category;
+import com.catalogo.domains.entities.Language;
 import com.catalogo.domains.entities.Film;
 import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;
@@ -98,20 +100,76 @@ public class FilmServiceImpl implements FilmService {
 
 	@Override
 	public Film addActorToFilm(Integer filmId, Actor actor) throws InvalidDataException, NotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		Film film = filmOptional.get();
+
+		if (actor == null)
+			throw new InvalidDataException("No puede ser nulo");
+		if (actor.isInvalid())
+			throw new InvalidDataException(actor.getErrorsMessage(), actor.getErrorsFields());
+
+		film.addActor(actor);
+		dao.save(film);
+		
+		return film;
 	}
 
 	@Override
 	public List<Actor> getActorsInFilm(Integer filmId) throws NotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		return filmOptional.get().getActors();
 	}
 
 	@Override
 	public void deleteActorFromFilm(Integer filmId, Actor actor) throws NotFoundException {
-		// TODO Auto-generated method stub
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
 		
+		filmOptional.get().removeActor(actor);
+	}
+	
+	
+	public Film addCategory(int filmId, Category category) throws NotFoundException, InvalidDataException {
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		Film film = filmOptional.get();
+
+		if (category == null)
+			throw new InvalidDataException("No puede ser nulo");
+		if (category.isInvalid())
+			throw new InvalidDataException(category.getErrorsMessage(), category.getErrorsFields());
+
+		film.addCategory(category);
+		dao.save(film);
+		
+		return film;
+    }
+	
+	public List<Category> getCategory(Integer filmId) throws NotFoundException {
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		return filmOptional.get().getCategories();
 	}
 
+	
+    public void removeCategory(int filmId, Category category) throws NotFoundException {
+		Optional<Film> filmOptional = dao.findById(filmId);
+		if (filmOptional.isEmpty()) {
+			throw new NotFoundException("Film not found");
+		}
+		
+		filmOptional.get().removeCategory(category);
+    }
 }
