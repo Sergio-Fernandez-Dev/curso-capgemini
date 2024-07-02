@@ -1,5 +1,6 @@
 package com.catalogo.domains.services;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,14 +12,15 @@ import org.springframework.stereotype.Service;
 import com.catalogo.domains.contracts.repositories.ActorRepository;
 import com.catalogo.domains.contracts.services.ActorService;
 import com.catalogo.domains.entities.Actor;
+import com.catalogo.domains.entities.Category;
 import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;
 import com.catalogo.exceptions.NotFoundException;
 
 @Service
-public class ActorServiceImpl implements ActorService{
+public class ActorServiceImpl implements ActorService {
 	private ActorRepository dao;
-	
+
 	public ActorServiceImpl(ActorRepository dao) {
 		this.dao = dao;
 	}
@@ -60,29 +62,29 @@ public class ActorServiceImpl implements ActorService{
 
 	@Override
 	public Actor add(Actor item) throws DuplicateKeyException, InvalidDataException {
-		if (item == null)
+		if(item == null)
 			throw new InvalidDataException("No puede ser nulo");
-		if (item.isInvalid())
+		if(item.isInvalid())
 			throw new InvalidDataException(item.getErrorsMessage(), item.getErrorsFields());
-		if (item.getActorId() != 0 && dao.existsById(item.getActorId()))
+		if(item.getActorId() != 0 && dao.existsById(item.getActorId()))
 			throw new DuplicateKeyException("Ya existe");
 		return dao.save(item);
 	}
 
 	@Override
 	public Actor modify(Actor item) throws NotFoundException, InvalidDataException {
-		if (item == null)
+		if(item == null)
 			throw new InvalidDataException("No puede ser nulo");
-		if (item.isInvalid())
+		if(item.isInvalid())
 			throw new InvalidDataException(item.getErrorsMessage(), item.getErrorsFields());
-		if (!dao.existsById(item.getActorId()))
+		if(!dao.existsById(item.getActorId()))
 			throw new NotFoundException();
 		return dao.save(item);
 	}
 
 	@Override
 	public void delete(Actor item) throws InvalidDataException {
-		if (item == null)
+		if(item == null)
 			throw new InvalidDataException("No puede ser nulo");
 		dao.delete(item);
 	}
@@ -91,6 +93,5 @@ public class ActorServiceImpl implements ActorService{
 	public void deleteById(Integer id) {
 		dao.deleteById(id);
 	}
-
 	
 }
