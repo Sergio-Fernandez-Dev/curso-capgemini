@@ -21,15 +21,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.catalogo.application.resources.ActorResource.Peli;
 import com.catalogo.domains.contracts.services.ActorService;
 import com.catalogo.domains.entities.Actor;
 import com.catalogo.domains.entities.Film;
 import com.catalogo.domains.entities.FilmActor;
 import com.catalogo.domains.entities.models.ActorDTO;
 import com.catalogo.domains.entities.models.ActorShort;
-import com.catalogo.exceptions.DuplicateKeyException;
-import com.catalogo.exceptions.InvalidDataException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -67,12 +64,6 @@ class ActorResourceTest {
 		when(srv.getByProjection(ActorShort.class)).thenReturn(lista);
 		mockMvc.perform(get("/api/actores/v1?modo=short").accept(MediaType.APPLICATION_JSON)).andExpectAll(
 				status().isOk(), content().contentType("application/json"), jsonPath("$.size()").value(3));
-//		mvc.perform(get("/api/actores/v1").accept(MediaType.APPLICATION_XML))
-//			.andExpectAll(
-//					status().isOk(), 
-//					content().contentType("application/json"),
-//					jsonPath("$.size()").value(3)
-//					);
 	}
 
 	@Test
@@ -145,11 +136,6 @@ class ActorResourceTest {
 				.andExpect(header().string("Location", "http://localhost/api/actores/v1/1")).andDo(print());
 	}
 
-//	@Test
-//	void testDarPremio() {
-//		fail("Not yet implemented");
-//	}
-//
 	@Test
 	void testUpdate() throws Exception {
 		int id = 1;
