@@ -1,17 +1,17 @@
 package com.catalogo.domains.entities.models;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
 import com.catalogo.domains.entities.Film;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-public class FilmDTO implements Serializable {
+@AllArgsConstructor 
+@NoArgsConstructor
+public class FilmDetailsDTO {
 	private int filmId;
 	private String description;
 	private Integer length;
@@ -26,8 +26,8 @@ public class FilmDTO implements Serializable {
 	private List<String> actors;
 	private List<String> categories;
 	
-	public static FilmDTO from(Film source) {
-		return new FilmDTO(
+	public static FilmDetailsDTO from(Film source) {
+		return new FilmDetailsDTO(
 				source.getFilmId(), 
 				source.getDescription(),
 				source.getLength(),
@@ -44,7 +44,4 @@ public class FilmDTO implements Serializable {
 				source.getCategories().stream().map(item -> item.getName()).sorted().toList()
 				);
 	}
-
 }
-
-
