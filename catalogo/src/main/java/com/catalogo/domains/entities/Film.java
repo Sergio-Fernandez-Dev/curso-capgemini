@@ -154,7 +154,7 @@ public class Film extends EntityBase<Film> implements Serializable {
 	private List<FilmCategory> filmCategories = new ArrayList<FilmCategory>();
 
 	public Film() {
-	}
+	} 
 
 	public Film(int filmId) {
 		this.filmId = filmId;
@@ -183,7 +183,25 @@ public class Film extends EntityBase<Film> implements Serializable {
 		this.rentalRate = rentalRate;
 		this.replacementCost = replacementCost;
 	}
-
+	
+	public Film(int filmId, @NotBlank @Size(max = 128) String title, String description, @Min(1895) Short releaseYear,
+			@NotNull Language language, Language languageVO, @Positive byte rentalDuration,
+			@Positive @DecimalMin(value = "0.0", inclusive = false) @Digits(integer = 2, fraction = 2) BigDecimal rentalRate,
+			@Positive Integer length,
+			@DecimalMin(value = "0.0", inclusive = false) @Digits(integer = 3, fraction = 2) BigDecimal replacementCost) {
+		super();
+		this.filmId = filmId;
+		this.title = title;
+		this.description = description;
+		this.releaseYear = releaseYear;
+		this.language = language;
+		this.languageVO = languageVO;
+		this.rentalDuration = rentalDuration;
+		this.rentalRate = rentalRate;
+		this.length = length;
+		this.replacementCost = replacementCost;
+	}
+	
 	public Film(int filmId, @NotBlank @Size(max = 128) String title, String description, @Min(1895) Short releaseYear,
 			@NotNull Language language, Language languageVO, @Positive byte rentalDuration,
 			@Positive @DecimalMin(value = "0.0", inclusive = false) @Digits(integer = 2, fraction = 2) BigDecimal rentalRate,
