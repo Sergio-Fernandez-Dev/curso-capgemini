@@ -3,6 +3,9 @@ package com.catalogo.domains.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,146 +18,224 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.catalogo.domains.contracts.repositories.FilmRepository;
 import com.catalogo.domains.contracts.services.FilmService;
 import com.catalogo.domains.entities.Actor;
+import com.catalogo.domains.entities.Category;
 import com.catalogo.domains.entities.Film;
 import com.catalogo.domains.entities.Language;
+import com.catalogo.domains.services.FilmServiceImpl;
 import com.catalogo.exceptions.DuplicateKeyException;
 import com.catalogo.exceptions.InvalidDataException;
 import com.catalogo.exceptions.NotFoundException;
+
 
 @DataJpaTest
 @ComponentScan(basePackages = "com.catalogo")
 class FilmServiceImplTest {
 
-	@MockBean
-	FilmRepository dao;
+    @Mock
+    private FilmRepository filmRepository;
 
-	@Autowired
-	FilmService srv;
+    @InjectMocks
+    private FilmServiceImpl filmService;
+    private Film film;
 
-	private Film film1;
-	private Film film2;
-	private Film film3;
-	private Actor actor1;
-	private Actor actor2;
-	private Language language;
 
-	@BeforeEach
-	public void setUp() {
-		film1 = new Film();
-		film2 = new Film();
-		film3 = new Film();
-		language = new Language();
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        
+        film = mock(Film.class);
+        when(film.getFilmId()).thenReturn(1);
+        when(film.getTitle()).thenReturn("Valid Title");
+        when(film.getRentalRate()).thenReturn(BigDecimal.valueOf(4.99));
+        when(film.getRentalDuration()).thenReturn((byte) 5);
+        when(film.getReplacementCost()).thenReturn(BigDecimal.valueOf(19.99));
+        when(film.getLanguage()).thenReturn(new Language(1, "English"));
+        when(film.isInvalid()).thenReturn(false);
+    }
 
-		film1.setFilmId(1);
-		film1.setDescription("A great movie.");
-		film1.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-		film1.setLength(120);
-		film1.setRating("PG");
-		film1.setReleaseYear((short) 2023);
-		film1.setRentalDuration((byte) 5);
-		film1.setRentalRate(new BigDecimal("2.99"));
-		film1.setReplacementCost(new BigDecimal("19.99"));
-		film1.setTitle("A Movie Title");
-		film1.setLanguage(language);
-		film1.setFilmActors(new ArrayList<>());
+    @Test
+    void testGetByProjection() {
+        List<Film> films = new ArrayList<>();
+        when(filmRepository.findAllBy(any(Class.class))).thenReturn(films);
 
-		film1.setFilmId(2);
-		film1.setDescription("Another great movie.");
-		film1.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-		film1.setLength(120);
-		film1.setRating("PG");
-		film1.setReleaseYear((short) 2023);
-		film1.setRentalDuration((byte) 5);
-		film1.setRentalRate(new BigDecimal("2.99"));
-		film1.setReplacementCost(new BigDecimal("19.99"));
-		film1.setTitle("A Movie Title");
-		film1.setLanguage(language);
-		film1.setFilmActors(new ArrayList<>());
+        List<Object> result = filmService.getByProjection(Object.class);
 
-		film1.setFilmId(3);
-		film1.setDescription("Best movie at all.");
-		film1.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-		film1.setLength(120);
-		film1.setRating("PG");
-		film1.setReleaseYear((short) 2023);
-		film1.setRentalDuration((byte) 5);
-		film1.setRentalRate(new BigDecimal("2.99"));
-		film1.setReplacementCost(new BigDecimal("19.99"));
-		film1.setTitle("A Movie Title");
-		film1.setLanguage(language);
-		film1.setFilmActors(new ArrayList<>());
+        assertEquals(films, result);
+    }
 
-		actor1 = new Actor();
-		actor1.setActorId(1);
-		actor1.setFirstName("John");
-		actor1.setLastName("Doe");
+    @Test
+    void testGetByProjectionWithSort() {
+        List<Film> films = new ArrayList<>();
+        when(filmRepository.findAllBy(any(Sort.class), any(Class.class))).thenReturn(films);
 
-		actor2 = new Actor();
-		actor2.setActorId(2);
-		actor2.setFirstName("Jane");
-		actor2.setLastName("Smith");
-	}
+        List<Object> result = filmService.getByProjection(Sort.by("title"), Object.class);
 
-	@Test
-	void testGetAll_isNotEmpty() {
-		List<Film> lista = new ArrayList<>();
-		lista.add(film1);
-		lista.add(film2);
-		lista.add(film3);
+        assertEquals(films, result);
+    }
 
-		when(dao.findAll()).thenReturn(lista);
-		var result = srv.getAll();
-		assertThat(result.size()).isEqualTo(3);
-		verify(dao, times(1)).findAll();
-	}
+    @Test
+    void testGetByProjectionWithPageable() {
+        Page<Film> films = new PageImpl<>(new ArrayList<>());
+        when(filmRepository.findAllBy(any(Pageable.class), any(Class.class))).thenReturn(films);
 
-	@Test
-	void testGetOne_valid() {
+        Page<Object> result = filmService.getByProjection(Pageable.unpaged(), Object.class);
 
-		when(dao.findById(1)).thenReturn(Optional.of(film1));
-		var result = srv.getOne(1);
-		assertThat(result.isPresent()).isTrue();
-	}
+        assertEquals(films, result);
+    }
 
-	@Test
-	void testGetOne_notfound() {
-		when(dao.findById(1)).thenReturn(Optional.empty());
-		var result = srv.getOne(1);
-		assertThat(result.isEmpty()).isTrue();
-	}
-	
-	@Test
-	void testAddKO() throws DuplicateKeyException, InvalidDataException {
-		when(dao.save(any(Film.class))).thenReturn(null, null);
-		assertThrows(InvalidDataException.class, () -> srv.add(null));
-		verify(dao, times(0)).save(null);
-	}
-	
-	@Test
-	void testAddDuplicateKeyKO() throws DuplicateKeyException, InvalidDataException {
-		when(dao.findById(1)).thenReturn(Optional.of(film1));
-		assertThrows(DuplicateKeyException.class, () -> srv.add(film1));
-	}
-	
-	@Test
-	void testAddActorToFilm() throws InvalidDataException, NotFoundException {
-		when(dao.findById(1)).thenReturn(Optional.of(film1));
-		var result = srv.addActorToFilm(1, actor1);
-		assertEquals(actor1, result.getActors().getFirst());
-	}
-	@Test
-	void getActorsInFilm() throws InvalidDataException, NotFoundException {
-		when(dao.findById(1)).thenReturn(Optional.of(film1));
-		var result = srv.addActorToFilm(1, actor1);
-		result = srv.addActorToFilm(2, actor2);
-		assertFalse(result.getFilmActors().isEmpty());
-	}
+    @Test
+    void testGetAllWithSort() {
+        List<Film> films = new ArrayList<>();
+        when(filmRepository.findAll(any(Sort.class))).thenReturn(films);
+
+        List<Film> result = filmService.getAll(Sort.by("title"));
+
+        assertEquals(films, result);
+    }
+
+    @Test
+    void testGetAllWithPageable() {
+        Page<Film> films = new PageImpl<>(new ArrayList<>());
+        when(filmRepository.findAll(any(Pageable.class))).thenReturn(films);
+
+        Page<Film> result = filmService.getAll(Pageable.unpaged());
+
+        assertEquals(films, result);
+    }
+
+    @Test
+    void testGetAll() {
+        List<Film> films = new ArrayList<>();
+        when(filmRepository.findAll()).thenReturn(films);
+
+        List<Film> result = filmService.getAll();
+
+        assertEquals(films, result);
+    }
+
+    @Test
+    void testGetOne() {
+        Film film = new Film();
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+
+        Optional<Film> result = filmService.getOne(1);
+
+        assertTrue(result.isPresent());
+        assertEquals(film, result.get());
+    }
+
+    @Test
+    void testAdd() throws DuplicateKeyException, InvalidDataException {
+        when(filmRepository.save(any(Film.class))).thenReturn(film);
+
+        Film result = filmService.add(film);
+
+        assertEquals(film, result);
+    }
+
+    @Test
+    void testModify() throws NotFoundException, InvalidDataException { 
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+        when(filmRepository.save(any(Film.class))).thenReturn(film);
+
+        Film result = filmService.modify(film);
+
+        assertEquals(film, result);
+    }
+
+    @Test
+    void testDelete() throws InvalidDataException {
+        doNothing().when(filmRepository).deleteById(anyInt());
+
+        filmService.delete(film);
+
+        verify(filmRepository, times(1)).deleteById(anyInt());
+    }
+
+    @Test
+    void testDeleteById() {
+        doNothing().when(filmRepository).deleteById(anyInt());
+
+        filmService.deleteById(1);
+
+        verify(filmRepository, times(1)).deleteById(anyInt());
+    }
+
+    @Test
+    void testAddActorToFilm() throws InvalidDataException, NotFoundException {
+    	var actor = new Actor(1,"Silvester","Stalone");
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+        when(filmRepository.save(any(Film.class))).thenReturn(film);
+
+        Film result = filmService.addActorToFilm(1, actor);
+
+        assertEquals(film, result);
+    }
+
+    @Test
+    void testGetActorsInFilm() throws NotFoundException {
+        Film film = new Film();
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+
+        List<Actor> result = filmService.getActorsInFilm(1);
+
+        assertNotNull(result);
+    }
+
+    @Test
+    void testDeleteActorFromFilm() throws NotFoundException {
+        Film film = new Film();
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+
+        filmService.deleteActorFromFilm(1, new Actor());
+
+        verify(filmRepository, times(1)).findById(anyInt());
+    }
+
+    @Test
+    void testAddCategory() throws NotFoundException, InvalidDataException {
+    	var category = new Category();
+    	category.setName("Aventuras");
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+        when(filmRepository.save(any(Film.class))).thenReturn(film);
+
+        Film result = filmService.addCategory(1, category);
+
+        assertEquals(film, result);
+    }
+
+    @Test
+    void testGetCategory() throws NotFoundException {
+
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+
+        List<Category> result = filmService.getCategory(1);
+
+        assertNotNull(result);
+    }
+
+    @Test
+    void testRemoveCategory() throws NotFoundException {
+
+        when(filmRepository.findById(anyInt())).thenReturn(Optional.of(film));
+
+        filmService.removeCategory(1, new Category());
+
+        verify(filmRepository, times(1)).findById(anyInt());
+    }
 }

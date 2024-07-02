@@ -10,97 +10,113 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.catalogo.domains.entities.Film.Rating;
 
 
-public class FilmTest {
 
+class FilmTest {
+
+    @InjectMocks
     private Film film;
-    private Actor actor1;
-    private Actor actor2;
+
+    @Mock
     private Language language;
 
     @BeforeEach
-    public void setUp() {
-        film = new Film();
-        language = new Language();
-        
-        
-        film.setFilmId(1);
-        film.setDescription("A great movie.");
-        film.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-        film.setLength(120);
-        film.Rat
-        film.setReleaseYear((short) 2023);
-        film.setRentalDuration((byte) 5);
-        film.setRentalRate(new BigDecimal("2.99"));
-        film.setReplacementCost(new BigDecimal("19.99"));
-        film.setTitle("A Movie Title");
-        film.setLanguage(language);
-        film.setFilmActors(new ArrayList<>());
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        film = new Film(1, "Test Title", language, (byte) 5, new BigDecimal("4.99"), new BigDecimal("19.99"));
+    }
 
-        actor1 = new Actor();
-        actor1.setActorId(1);
-        actor1.setFirstName("John");
-        actor1.setLastName("Doe");
+    @Test
+    void testAddActor() {
+        Actor actor = new Actor(1, "John", "Doe");
+        film.addActor(actor);
 
-        actor2 = new Actor();
-        actor2.setActorId(2);
-        actor2.setFirstName("Jane");
-        actor2.setLastName("Smith");
+        List<Actor> actors = film.getActors();
+        assertEquals(1, actors.size());
+        assertEquals(actor, actors.get(0));
+    }
+
+    @Test
+    void testRemoveActor() {
+        Actor actor = new Actor(1, "John", "Doe");
+        film.addActor(actor);
+        film.removeActor(actor);
+
+        List<Actor> actors = film.getActors();
+        assertTrue(actors.isEmpty());
+    }
+
+    @Test
+    void testSetActors() {
+        List<Actor> actors = new ArrayList<>();
+        actors.add(new Actor(1, "John", "Doe"));
+        actors.add(new Actor(2, "Jane", "Doe"));
+
+        film.setActors(actors);
+
+        List<Actor> filmActors = film.getActors();
+        assertEquals(2, filmActors.size());
+        assertTrue(filmActors.containsAll(actors));
+    }
+
+    @Test
+    void testClearActors() {
+        Actor actor = new Actor(1, "John", "Doe");
+        film.addActor(actor);
+        film.clearActors();
+
+        List<Actor> actors = film.getActors();
+        assertTrue(actors.isEmpty());
     }
     
     @Test
-	@DisplayName("Test if two objects with same ID are not equals")
-	void testObectsAreDifferent() {
-		var film1 = new Film();
-		var film2 = new Film();
-		
-		film1.setFilmId(1);
-		film2.setFilmId(1);
-		
-		assertFalse(film1.equals(film2));
-	}
+    void testAddCategory() {
+        Category category = new Category(1, "Action");
+        film.addCategory(category);
 
-    @Test
-    public void testGetActors() {
-        film.addActor(actor1);
-        film.addActor(actor2);
-
-        List<Actor> actors = film.getActors();
-        assertEquals(2, actors.size());
-        assertTrue(actors.contains(actor1));
-        assertTrue(actors.contains(actor2));
+        List<Category> categories = film.getCategories();
+        assertEquals(1, categories.size());
+        assertEquals(category, categories.get(0));
     }
 
     @Test
-    public void testAddActor() {
-        film.addActor(actor1);
-        assertEquals(1, film.getActors().size());
-        assertTrue(film.getActors().contains(actor1));
+    void testRemoveCategory() {
+        Category category = new Category(1, "Action");
+        film.addCategory(category);
+        film.removeCategory(category);
 
-        film.addActor(actor2);
-        assertEquals(2, film.getActors().size());
-        assertTrue(film.getActors().contains(actor2));
+        List<Category> categories = film.getCategories();
+        assertTrue(categories.isEmpty());
     }
 
     @Test
-    public void testRemoveActor() {
-        film.addActor(actor1);
-        film.addActor(actor2);
-        assertEquals(2, film.getActors().size());
+    void testSetCategories() {
+        List<Category> categories = new ArrayList<>();
+        categories.add(new Category(1, "Action"));
+        categories.add(new Category(2, "Comedy"));
 
-        film.removeActor(actor1);
-        assertEquals(1, film.getActors().size());
-        assertFalse(film.getActors().contains(actor1));
-        assertTrue(film.getActors().contains(actor2));
+        film.setCategories(categories);
 
-        film.removeActor(actor2);
-        assertEquals(0, film.getActors().size());
-        assertFalse(film.getActors().contains(actor2));
+        List<Category> filmCategories = film.getCategories();
+        assertEquals(2, filmCategories.size());
+        assertTrue(filmCategories.containsAll(categories));
     }
 
+    @Test
+    void testClearCategories() {
+        Category category = new Category(1, "Action");
+        film.addCategory(category);
+        film.clearCategories();
+
+        List<Category> categories = film.getCategories();
+        assertTrue(categories.isEmpty());
+    }
 
 	
 

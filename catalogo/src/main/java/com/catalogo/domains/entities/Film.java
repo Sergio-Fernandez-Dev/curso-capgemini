@@ -432,26 +432,17 @@ public class Film extends EntityBase<Film> implements Serializable {
 		target.length = length;
 		target.replacementCost = replacementCost;
 		target.rating = rating;
-		// Borra los actores que sobran
+
 		target.getActors().stream().filter(item -> !getActors().contains(item))
 				.forEach(item -> target.removeActor(item));
-		// Añade los actores que faltan
+
 		getActors().stream().filter(item -> !target.getActors().contains(item)).forEach(item -> target.addActor(item));
-		// Borra las categorias que sobran
+
 		target.getCategories().stream().filter(item -> !getCategories().contains(item))
 				.forEach(item -> target.removeCategory(item));
-		// Añade las categorias que faltan
+
 		getCategories().stream().filter(item -> !target.getCategories().contains(item))
 				.forEach(item -> target.addCategory(item));
 		return target;
 	}
-	
-//	@PostPersist
-//	@PostUpdate
-//	public void prePersiste() {
-//		System.err.println("prePersiste()");
-//		filmActors.forEach(o -> o.prePersiste());
-//		filmCategories.forEach(o -> o.prePersiste());
-//	}
-
 }
