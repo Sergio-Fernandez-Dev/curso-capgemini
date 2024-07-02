@@ -2,9 +2,10 @@ package com.catalogo.domains.entities.models;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
+
 import com.catalogo.domains.entities.Film;
 
-import com.catalogo.domains.entities.Language;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,26 +13,38 @@ import lombok.Data;
 @AllArgsConstructor
 public class FilmDTO implements Serializable {
 	private int filmId;
-	private String title;
 	private String description;
-	private Short releaseYear;
-	private Language language;
-	private Language languageVO;
-	private byte rentalDuration;
-	private BigDecimal rentalRate;
 	private Integer length;
+	private String rating;
+	private Short releaseYear;
+	private Byte rentalDuration;
+	private BigDecimal rentalRate;
 	private BigDecimal replacementCost;
-
+	private String title;
+	private String language;
+	private String languageVO;
+	private List<String> actors;
+	private List<String> categories;
+	
 	public static FilmDTO from(Film source) {
-		return new FilmDTO(source.getFilmId(), source.getTitle(), source.getDescription(), source.getReleaseYear(),
-				source.getLanguage(), source.getLanguageVO(), source.getRentalDuration(), source.getRentalRate(),
-				source.getLength(), source.getReplacementCost());
-	}
-
-	public static Film from(FilmDTO source) {
-		return new Film(source.getFilmId(), source.getTitle(), source.getDescription(), source.getReleaseYear(),
-				source.getLanguage(), source.getLanguageVO(), source.getRentalDuration(), source.getRentalRate(),
-				source.getLength(), source.getReplacementCost());
+		return new FilmDTO(
+				source.getFilmId(), 
+				source.getDescription(),
+				source.getLength(),
+				source.getRating() == null ? null : source.getRating().getValue(),
+				source.getReleaseYear(),
+				source.getRentalDuration(),
+				source.getRentalRate(),
+				source.getReplacementCost(),
+				source.getTitle(),
+				source.getLanguage() == null ? null : source.getLanguage().getName(),
+				source.getLanguageVO() == null ? null : source.getLanguageVO().getName(),
+				source.getActors().stream().map(item -> item.getFirstName() + " " + item.getLastName())
+					.sorted().toList(),
+				source.getCategories().stream().map(item -> item.getName()).sorted().toList()
+				);
 	}
 
 }
+
+
