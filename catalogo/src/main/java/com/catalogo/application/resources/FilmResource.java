@@ -27,6 +27,7 @@ import com.catalogo.domains.contracts.services.FilmService;
 import com.catalogo.domains.entities.Category;
 import com.catalogo.domains.entities.Film;
 import com.catalogo.domains.entities.models.ActorDTO;
+import com.catalogo.domains.entities.models.ActorShort;
 import com.catalogo.domains.entities.models.FilmDetailsDTO;
 import com.catalogo.domains.entities.models.FilmEditDTO;
 import com.catalogo.domains.entities.models.FilmShortDTO;
@@ -37,10 +38,15 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/peliculas/v1")
+@RequestMapping(path = "api/peliculas/v1")
 public class FilmResource {
 	@Autowired
 	private FilmService srv;
+	
+	@GetMapping
+	public List getAll() {
+		return srv.getByProjection(FilmShortDTO.class);
+	}
 
 	@GetMapping(params = "page")
 	public Page<FilmShortDTO> getAll(Pageable pageable,
@@ -56,11 +62,6 @@ public class FilmResource {
 		var content = srv.getAll(pageable);
 		return new PageImpl<>(content.getContent().stream().map(item -> FilmDetailsDTO.from(item)).toList(), pageable,
 				content.getTotalElements());
-	}
-
-	@GetMapping
-	public List<FilmShortDTO> getAll(@RequestParam(defaultValue = "short") String mode) {
-		return srv.getByProjection(FilmShortDTO.class);
 	}
 
 	@GetMapping(params = "mode=details")

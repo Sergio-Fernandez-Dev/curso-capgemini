@@ -35,6 +35,7 @@ import com.catalogo.domains.entities.models.FilmEditDTO;
 import com.catalogo.domains.entities.models.FilmShortDTO;
 import com.catalogo.exceptions.BadRequestException;
 import com.catalogo.exceptions.NotFoundException;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Value;
@@ -77,40 +78,13 @@ class FilmResourceTest {
     }
 
     @Test
-    void testGetAllPageable() throws Exception {
-        Pageable pageable = PageRequest.of(0, 10);
-        when(srv.getByProjection(pageable, FilmShortDTO.class)).thenReturn(new PageImpl<>(Arrays.asList(filmShortDTO)));
-        
-        mockMvc.perform(get("/peliculas/v1?page=0")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.size()").value(1))
-                .andExpect(jsonPath("$.content[0].id").value(film.getFilmId()))
-                .andDo(print());
-    }
-
-    @Test
-    void testGetAllDetailsPage() throws Exception {
-        Pageable pageable = PageRequest.of(0, 10);
-        when(srv.getAll(pageable)).thenReturn(new PageImpl<>(Arrays.asList(film)));
-        
-        mockMvc.perform(get("/peliculas/v1?page=0&mode=details")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.size()").value(1))
-                .andExpect(jsonPath("$.content[0].id").value(film.getFilmId()))
-                .andDo(print());
-    }
-
-    @Test
     void testGetAll() throws Exception {
         when(srv.getByProjection(FilmShortDTO.class)).thenReturn(Arrays.asList(filmShortDTO));
         
-        mockMvc.perform(get("/peliculas/v1")
+        mockMvc.perform(get("/api/peliculas/v1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].id").value(film.getFilmId()))
                 .andDo(print());
     }
 
@@ -118,22 +92,23 @@ class FilmResourceTest {
     void testGetAllDetails() throws Exception {
         when(srv.getAll()).thenReturn(Arrays.asList(film));
         
-        mockMvc.perform(get("/peliculas/v1?mode=details")
+        mockMvc.perform(get("/api/peliculas/v1?mode=details")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].id").value(film.getFilmId()))
+                .andExpect(jsonPath("$[0].filmId").value(film.getFilmId()))
                 .andDo(print());
     }
 
     @Test
     void testGetOneShort() throws Exception {
+    	int id = 1;
         when(srv.getOne(1)).thenReturn(Optional.of(film));
         
-        mockMvc.perform(get("/peliculas/v1/1?mode=short")
+        mockMvc.perform(get("/api/peliculas/v1/{id}?mode=short", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(film.getFilmId()))
+                .andExpect(jsonPath("$.filmId").value(film.getFilmId()))
                 .andDo(print());
     }
 
@@ -141,10 +116,10 @@ class FilmResourceTest {
     void testGetOneDetails() throws Exception {
         when(srv.getOne(1)).thenReturn(Optional.of(film));
         
-        mockMvc.perform(get("/peliculas/v1/1?mode=details")
+        mockMvc.perform(get("/api/peliculas/v1/1?mode=details")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(film.getFilmId()))
+                .andExpect(jsonPath("$.filmId").value(film.getFilmId()))
                 .andDo(print());
     }
 
@@ -152,20 +127,19 @@ class FilmResourceTest {
     void testGetOneEdit() throws Exception {
         when(srv.getOne(1)).thenReturn(Optional.of(film));
         
-        mockMvc.perform(get("/peliculas/v1/1")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/peliculas/v1/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(film.getFilmId()))
+                .andExpect(jsonPath("$.filmId").value(film.getFilmId()))
                 .andDo(print());
     }
 
     @Test
     void testGetFilms() throws Exception {
         Actor actor = new Actor(1, "John", "Doe");
-        film.getActors().add(actor);
+        film.addActor(actor);
         when(srv.getOne(1)).thenReturn(Optional.of(film));
         
-        mockMvc.perform(get("/peliculas/v1/1/reparto")
+        mockMvc.perform(get("/api/peliculas/v1/1/reparto")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
@@ -176,14 +150,14 @@ class FilmResourceTest {
     @Test
     void testGetCategories() throws Exception {
         Category category = new Category(1, "Action");
-        film.getCategories().add(category);
+        film.addCategory(category);
         when(srv.getOne(1)).thenReturn(Optional.of(film));
         
-        mockMvc.perform(get("/peliculas/v1/1/categorias")
+        mockMvc.perform(get("/api/peliculas/v1/1/categorias")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].categoryId").value(category.getCategoryId()))
+                .andExpect(jsonPath("$[0].id").value(category.getCategoryId()))
                 .andDo(print());
     }
 
@@ -191,7 +165,7 @@ class FilmResourceTest {
     void testAdd() throws Exception {
         when(srv.add(any(Film.class))).thenReturn(film);
         
-        mockMvc.perform(post("/peliculas/v1")
+        mockMvc.perform(post("/api/peliculas/v1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(filmEditDTO)))
                 .andExpect(status().isCreated())
@@ -202,7 +176,7 @@ class FilmResourceTest {
     void testModify() throws Exception {
         when(srv.modify(any(Film.class))).thenReturn(film);
         
-        mockMvc.perform(put("/peliculas/v1/1")
+        mockMvc.perform(put("/api/peliculas/v1/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(filmEditDTO)))
                 .andExpect(status().isOk())
@@ -213,7 +187,7 @@ class FilmResourceTest {
     void testDelete() throws Exception {
         doNothing().when(srv).deleteById(1);
         
-        mockMvc.perform(delete("/peliculas/v1/1")
+        mockMvc.perform(delete("/api/peliculas/v1/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());

@@ -2,6 +2,9 @@ package com.catalogo.application.resources;
 
 import java.net.URI;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -34,15 +37,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/api/actores/v1")
 public class ActorResource {
+	@Autowired
 	private ActorService srv;
 
-	public ActorResource(ActorService srv) {
-		this.srv = srv;
-	}
-
 	@GetMapping
-	public List getAll(@RequestParam(required = false, defaultValue = "largo") String modo) {
-		if ("short".equals(modo))
+	public List getAll(@RequestParam(required = false, defaultValue = "long") String mode) {
+		if ("short".equals(mode))
 			return srv.getByProjection(ActorShort.class);
 		return srv.getByProjection(ActorDTO.class);
 	}
