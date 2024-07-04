@@ -51,30 +51,25 @@ public class ActorResource {
 
 	@Operation(summary = "Listado de actores", description = "Recupera la lista de actores en formato corto o detallado.", 
 			parameters = {
-							@Parameter(
-									in = ParameterIn.QUERY, 
-									name = "mode", 
-									required = false, 
-									description = "Formato de los actores", 
-									schema = @Schema(
-												type = "string", 
-												allowableValues = {"long", "short" }, 
-												defaultValue = "long"
-											)
-									) 
-						}, 
+					@Parameter(
+							in = ParameterIn.QUERY, 
+							name = "mode", 
+							required = false, 
+							description = "Formato de los actores", 
+							schema = @Schema(
+										type = "string", 
+										allowableValues = {"long", "short" }, 
+										defaultValue = "long"
+			))}, 
 			responses = {
-							@ApiResponse(
-									responseCode = "200",
-									description = "OK", 
-									content = @Content(
-													mediaType = "application/json", 
-													schema = @Schema(
-																anyOf = { ActorShort.class,ActorDTO.class }
-																)
-													)
-									) 
-			})
+					@ApiResponse(
+							responseCode = "200",
+							description = "OK", 
+							content = @Content(
+											mediaType = "application/json", 
+											schema = @Schema(
+														anyOf = { ActorShort.class,ActorDTO.class }
+			)))})
 	@GetMapping
 	public List<?> getAll(@RequestParam(required = false, defaultValue = "long") String mode) {
 		if ("short".equals(mode))
