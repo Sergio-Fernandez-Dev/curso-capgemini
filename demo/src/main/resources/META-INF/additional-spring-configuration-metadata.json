@@ -1,0 +1,62 @@
+{"properties": [
+  {
+    "name": "springdoc.swagger-ui.path",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.swagger-ui.path'"
+  },
+  {
+    "name": "info.app.version",
+    "type": "java.lang.String",
+    "description": "A description for 'info.app.version'"
+  },
+  {
+    "name": "info.app.name",
+    "type": "java.lang.String",
+    "description": "A description for 'info.app.name'"
+  },
+  {
+    "name": "springdoc.show-actuator",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.show-actuator'"
+  },
+  {
+    "name": "management.info.env.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'management.info.env.enabled'"
+  },
+  {
+    "name": "info.server.port",
+    "type": "java.lang.String",
+    "description": "A description for 'info.server.port'"
+  },
+  {
+    "name": "info.app.description",
+    "type": "java.lang.String",
+    "description": "A description for 'info.app.description'"
+  },
+  {
+    "name": "springdoc.swagger-ui.tagsSorter",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.swagger-ui.tagsSorter'"
+  },
+  {
+    "name": "springdoc.swagger-ui.operationsSorter",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.swagger-ui.operationsSorter'"
+  },
+  {
+    "name": "springdoc.swagger-ui.docExpansion",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.swagger-ui.docExpansion'"
+  },
+  {
+    "name": "springdoc.override-with-generic-response",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.override-with-generic-response'"
+  },
+  {
+    "name": "springdoc.swagger-ui.docExpansion",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.swagger-ui.docExpansion'"
+  }
+]}
