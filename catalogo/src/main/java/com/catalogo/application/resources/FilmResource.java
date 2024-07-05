@@ -44,7 +44,7 @@ public class FilmResource {
 	private FilmService srv;
 	
 	@GetMapping
-	public List getAll() {
+	public List<?> getAll() {
 		return srv.getByProjection(FilmShortDTO.class);
 	}
 
