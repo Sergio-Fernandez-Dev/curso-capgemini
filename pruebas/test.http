@@ -1,0 +1,63 @@
+
+post http://localhost:8090/ws/calculator
+Content-Type: text/xml
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cal="http://example.com/webservices/schemas/calculator">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <cal:addRequest>
+         <cal:op1>2</cal:op1>
+         <cal:op2>3</cal:op2>
+      </cal:addRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+###
+
+get http://localhost:8001/api/actores/v1?page=1
+Accept: application/pdf,application/json
+
+###
+
+get http://localhost:8001/api/actores/v1?modo=kk
+Accept: application/xml
+
+###
+
+get http://localhost:8001/api/actores/v1/222
+Accept: application/pdf,application/json
+
+###
+
+get http://localhost:8001/api/actores/v1/1/pelis
+Accept: application/pdf,application/json
+
+
+###
+
+post http://localhost:8001/api/actores/v1
+Content-Type: application/json
+
+{
+  "nombre": "Servicio",
+  "apellidos": "Rest"
+}
+
+###
+
+put http://localhost:8001/api/actores/v1/205
+Content-Type: application/json
+
+{
+  "id": 205,
+  "nombre": " ",
+  "apellidos": "Rest"
+}
+
+###
+
+DELETE http://localhost:8001/api/actores/v1/205
+
+###
+
+get http://localhost:8001/api/actores/v1/205/v2
