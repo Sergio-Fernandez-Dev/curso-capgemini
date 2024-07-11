@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SecurityModule } from './security';
-import { DemosComponent } from './demos/demos.component';
+import { DemosComponent } from './ejemplos/demos/demos.component';
 import { NotificationComponent } from './main';
 
 @Component({
