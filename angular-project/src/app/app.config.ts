@@ -9,7 +9,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     LoggerService,
     {provide: ERROR_LEVEL, useValue: environment.ERROR_LEVEL},
-    provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-  ],
+  ]
 };

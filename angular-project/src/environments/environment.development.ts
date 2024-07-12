@@ -1,4 +1,4 @@
 export const environment = {
-    production: true,
-    ERROR_LEVEL: 1,
+  production: false,
+  ERROR_LEVEL: 3,
 };

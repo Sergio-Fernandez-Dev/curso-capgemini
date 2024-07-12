@@ -1,1 +1,1 @@
-export { SecurityModule } from './security.module';
+export * from './security.module'
