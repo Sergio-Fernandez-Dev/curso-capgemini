@@ -3,14 +3,18 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MyCoreModule } from '@my/core';
 import { Unsubscribable } from 'rxjs';
-import { NotificationService } from 'src/app/common-services';
+import { NotificationService} from 'src/app/common-services';
+import { NotificationModalComponent } from 'src/app/main';
+import { CardComponent } from 'src/app/common-components';
+import { CalculadoraComponent } from 'src/lib/my-core/components/calculadora/calculadora.component';
 
 @Component({
   selector: 'app-demos',
   standalone: true,
-  imports: [CommonModule, FormsModule, MyCoreModule, ],
+  imports: [CommonModule, FormsModule, MyCoreModule, CalculadoraComponent, NotificationModalComponent, CardComponent],
   templateUrl: './demos.component.html',
-  styleUrl: './demos.component.css'
+  styleUrl: './demos.component.css',
+  providers: [ NotificationService ],
 })
 export class DemosComponent implements OnInit, OnDestroy  {
   private nombre: string = 'mundo'
@@ -62,10 +66,12 @@ export class DemosComponent implements OnInit, OnDestroy  {
     this.idProvincia = id
   }
 
+  // Laboratorio de Notificaciones
   private suscriptor?: Unsubscribable;
 
   ngOnInit(): void {
-    this.suscriptor = this.vm.Notificacion.subscribe(//n => {
+    this.suscriptor = this.vm.Notificacion.subscribe(
+      //n => {
       // if (n.Type !== NotificationType.error) { return; }
       // window.alert(`Suscripción: ${n.Message}`);
       // this.vm.remove(this.vm.Listado.length - 1);
@@ -78,4 +84,27 @@ export class DemosComponent implements OnInit, OnDestroy  {
     }
   }
 
+  // Ejemplo de Calculadora
+  idiomas = [
+    { codigo: 'en-US', region: 'USA' },
+    { codigo: 'es', region: 'España' },
+    { codigo: 'pt', region: 'Portugal' },
+  ];
+  idioma = this.idiomas[0].codigo;
+  calculos: Calculo[] = [];
+  valCalculadora = 777;
+
+  ponResultado(origen: string, valor: number) {
+    this.calculos.push({
+      pos: this.calculos.length + 1,
+      origen,
+      valor
+    });
+  }
+
+}
+interface Calculo {
+  pos: number
+  origen: string
+  valor: number
 }
