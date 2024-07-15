@@ -13,14 +13,14 @@ import { ContactosComponent } from 'src/app/contactos';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NotificationComponent, CommonModule, AjaxWaitComponent, ],
+  imports: [NotificationComponent, CommonModule, AjaxWaitComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
   menu = [
-    { texto: 'contactos', icono: 'fa-solid fa-person', componente: ContactosComponent},
     { texto: 'calculadora', icono: 'fa-solid fa-calculator', componente: CalculadoraComponent },
+    { texto: 'contactos', icono: 'fa-solid fa-person', componente: ContactosComponent},
     { texto: 'formulario', icono: 'fa-solid fa-person-chalkboard', componente: FormularioComponent},
     { texto: 'inicio', icono: 'fa-solid fa-house', componente: HomeComponent },
     { texto: 'demos', icono: 'fa-solid fa-person-chalkboard', componente: DemosComponent},

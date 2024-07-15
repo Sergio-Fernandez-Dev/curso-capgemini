@@ -1,11 +1,16 @@
 /* eslint-disable @typescript-eslint/array-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpClient, HttpContextToken, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpContextToken,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from '../common-services/notification.service';
 import { LoggerService } from 'src/lib/my-core/services/logger.service';
+import { Router } from '@angular/router';
 
 export abstract class RESTDAOService<T, K> {
   protected baseUrl = environment.apiURL;
@@ -47,11 +52,14 @@ export class ContactosViewModelService {
   protected listado: any[] = [];
   protected elemento: any = {};
   protected idOriginal: any = null;
+  protected listURL = '/contactos';
+auth: any;
 
   constructor(
     protected notify: NotificationService,
     protected out: LoggerService,
-    protected dao: ContactosDAOService
+    protected dao: ContactosDAOService,
+    protected router: Router
   ) {}
 
   public get Modo(): ModoCRUD {
@@ -114,8 +122,9 @@ export class ContactosViewModelService {
   public cancel(): void {
     this.elemento = {};
     this.idOriginal = null;
-    this.list();
+    this.router.navigateByUrl(this.listURL);
   }
+
   public send(): void {
     switch (this.modo) {
       case 'add':
@@ -147,7 +156,8 @@ export class ContactosViewModelService {
         msg = err.message;
         break;
       case 404:
-        msg = `ERROR ${err.status}: ${err.statusText}`;
+        this.router.navigateByUrl('/404.html');
+        return;
         break;
       default:
         msg = `ERROR ${err.status}: ${err.error?.['title'] ?? err.statusText}.${
