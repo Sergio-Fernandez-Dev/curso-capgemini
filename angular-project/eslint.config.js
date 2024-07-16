@@ -2,7 +2,6 @@
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
-const { off } = require("process");
 
 module.exports = tseslint.config(
   {
@@ -16,7 +15,7 @@ module.exports = tseslint.config(
     processor: angular.processInlineTemplates,
     rules: {
       "@angular-eslint/directive-selector": [
-        "error",
+        "warn",
         {
           type: "attribute",
           prefix: "app",
@@ -31,7 +30,7 @@ module.exports = tseslint.config(
           style: "kebab-case",
         },
       ],
-      "@typescript-eslint/no-inferrable-types": ["off"],
+      "@typescript-eslint/no-inferrable-types": [ "off" ]
     },
   },
   {
