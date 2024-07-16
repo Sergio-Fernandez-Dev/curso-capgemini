@@ -1,8 +1,10 @@
 import { Routes, UrlSegment } from '@angular/router';
 import { HomeComponent, PageNotFoundComponent } from './main';
-import { CalculadoraComponent, DemosComponent } from './ejemplos';
+
 import { ContactosAddComponent, ContactosEditComponent, ContactosListComponent, ContactosViewComponent } from './contactos';
 import { AuthCanActivateFn } from './security';
+import { CalculadoraComponent } from 'src/lib/my-core/components/calculadora/calculadora.component';
+import { DemosComponent } from './ejemplos';
 
 export function graficoFiles(url: UrlSegment[]) {
   return url.length === 1 && url[0].path.endsWith('.svg') ? ({consumed: url}) : null;

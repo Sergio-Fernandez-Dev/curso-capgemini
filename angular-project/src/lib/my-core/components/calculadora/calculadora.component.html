@@ -1,0 +1,25 @@
+<div class="calculator-container">
+    <div class="calculator">
+      <div class="display">{{ displayValue }}</div>
+      <div class="buttons">
+        <button class="span-three buttons--delete" (click)="clear()">C</button>
+        <button class="buttons--operations" (click)="chooseOperation('/')">/</button>
+        <button (click)="appendNumber('7')">7</button>
+        <button (click)="appendNumber('8')">8</button>
+        <button (click)="appendNumber('9')">9</button>
+        <button class="buttons--operations" (click)="chooseOperation('*')">*</button>
+        <button (click)="appendNumber('4')">4</button>
+        <button (click)="appendNumber('5')">5</button>
+        <button (click)="appendNumber('6')">6</button>
+        <button class="buttons--operations" (click)="chooseOperation('-')">-</button>
+        <button (click)="appendNumber('1')">1</button>
+        <button (click)="appendNumber('2')">2</button>
+        <button (click)="appendNumber('3')">3</button>
+        <button class="buttons--operations" (click)="chooseOperation('+')">+</button>
+        <button (click)="appendNumber('0')" class="span-two">0</button>
+        <button (click)="appendNumber('.')">.</button>
+        <button class="buttons--operations" (click)="calculate()">=</button>
+      </div>
+    </div>
+  </div>
+  
