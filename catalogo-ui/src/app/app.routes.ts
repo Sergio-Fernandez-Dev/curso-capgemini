@@ -1,10 +1,13 @@
 import { Routes } from '@angular/router';
+import { HomeComponent, PageNotFoundComponent } from './main';
 
 export const routes: Routes = [
-    { path: '', component: },
-    { path: 'peliculas/v1', component: },
-    { path: 'peliculas/v1/:id', component: },
-    { path: 'peliculas/v1/:id/categorias', component: },
-    { path: 'peliculas/v1/:id/like', component: },
-    { path: 'peliculas/v1/:id/reparto', component: },
+  { path: '', pathMatch: 'full', component: HomeComponent },
+  { path: 'inicio', component: HomeComponent },
+  { path: 'actores', loadChildren: () => import('./actores/modulo.module').then(mod => mod.ActoresModule) },
+
+
+
+  { path: '404.html', component: PageNotFoundComponent },
+  { path: '**', component: PageNotFoundComponent },
 ];

@@ -1,7 +1,6 @@
 export const environment = {
-  production: true,
-  ERROR_LEVEL: 1,
-  apiURL: '/api/',
+  production: false,
+  ERROR_LEVEL: 3,
+  apiURL: '/api/catalogo/',
   securityApiURL: '/auth/',
-  wsEndpoint: 'ws://localhost:4321/ws/',
 };

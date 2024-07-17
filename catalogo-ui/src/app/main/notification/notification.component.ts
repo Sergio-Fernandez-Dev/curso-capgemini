@@ -2,7 +2,6 @@ import { NgIf, NgFor, I18nSelectPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { NotificationService } from '../../common-services';
 
-
 @Component({
   selector: 'app-notification',
   standalone: true,

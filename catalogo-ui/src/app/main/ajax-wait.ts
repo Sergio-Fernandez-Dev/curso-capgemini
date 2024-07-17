@@ -87,7 +87,6 @@ export function ajaxWaitInterceptor(req: HttpRequest<unknown>, next: HttpHandler
   `],
     standalone: true,
 })
-
 export class AjaxWaitComponent implements DoCheck {
   private oculto = true;
   constructor(private srv: AjaxWaitService) { }
