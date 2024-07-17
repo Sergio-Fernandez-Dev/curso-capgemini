@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -5,13 +6,15 @@ import { DatePipe, } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
 import { ErrorMessagePipe, TypeValidator } from '@my/core';
 import { ActoresViewModelService } from './servicios.service';
+import { LowerCasePipe } from "../lib/my-core/pipes/cadenas.pipe";
+import { CapitalizePipe } from "../../lib/my-core/pipes/cadenas.pipe";
 
 @Component({
     selector: 'app-actores-list',
     templateUrl: './tmpl-list.component.html',
     styleUrls: ['./componente.component.css'],
     standalone: true,
-    imports: [RouterLink, PaginatorModule]
+    imports: [RouterLink, PaginatorModule, LowerCasePipe]
 })
 export class ActoresListComponent implements OnChanges, OnDestroy {
   @Input() page = 0
@@ -61,7 +64,7 @@ export class ActoresEditComponent implements OnChanges {
     templateUrl: './tmpl-view.component.html',
     styleUrls: ['./componente.component.css'],
     standalone: true,
-    imports: [DatePipe]
+    imports: [DatePipe, CapitalizePipe]
 })
 export class ActoresViewComponent implements OnChanges {
   @Input() id?: string;

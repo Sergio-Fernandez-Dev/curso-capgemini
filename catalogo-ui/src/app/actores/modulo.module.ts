@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ACTORES_COMPONENTES, ActoresAddComponent, ActoresEditComponent, ActoresListComponent, ActoresViewComponent } from './componente.component';
 import { RouterModule, Routes } from '@angular/router';
-import { InRoleCanActivate } from '../security';
 
 export const routes: Routes = [
   { path: '', component: ActoresListComponent },
