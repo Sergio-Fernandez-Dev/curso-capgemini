@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AjaxWaitComponent, HeaderComponent, NotificationComponent, NotificationModalComponent } from './main';
-import { NavigationService } from './common-services';
 
 @Component({
   selector: 'app-root',
@@ -11,5 +10,4 @@ import { NavigationService } from './common-services';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  constructor(nav: NavigationService) { }
 }

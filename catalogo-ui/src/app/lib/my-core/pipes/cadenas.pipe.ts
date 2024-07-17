@@ -27,6 +27,19 @@ export class CapitalizePipe implements PipeTransform {
 }
 
 @Pipe({
+  name: 'lowercase',
+  standalone: true,
+})
+export class LowerCasePipe implements PipeTransform {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transform(value: string): any {
+    return value
+      ?.toString()
+      .toLowerCase()
+  }
+}
+
+@Pipe({
     name: 'striptags',
     standalone: true
 })
@@ -70,4 +83,4 @@ export class ErrorMessagePipe implements PipeTransform {
   }
 }
 
-export const PIPES_CADENAS = [ElipsisPipe, CapitalizePipe, StripTagsPipe, ErrorMessagePipe,]
+export const PIPES_CADENAS = [ElipsisPipe, LowerCasePipe, CapitalizePipe, StripTagsPipe, ErrorMessagePipe,]
